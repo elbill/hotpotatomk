@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЖЕШКИОТ КОМПИР</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        @font-face {
+            font-family: 'Adigiana Ultra';
+            src: url('Adigiana Ultra.ttf') format('truetype');
+        }
+        body {
+            font-family: 'Adigiana Ultra', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #4a4a4a;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-family: 'Adigiana Ultra', cursive;
+            font-size: 2.5rem;
+            color: #d9534f;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px #fff;
+        }
+        .question {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #ff5722;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .button:hover {
+            background-color: #e64a19;
+            transform: scale(1.05);
+        }
+        .gif-container {
+            margin-top: 20px;
+        }
+        @keyframes moveRandomly {
+            0% { transform: translate(0, 0); }
+            25% { transform: translate(20px, -20px); }
+            50% { transform: translate(-20px, 20px); }
+            75% { transform: translate(20px, 20px); }
+            100% { transform: translate(-20px, -20px); }
+        }
+        .animate {
+            animation: moveRandomly 1s infinite;
+        }
+        .gif-container img {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1><b>ЖЕШКИОТ КОМПИР</b></h1>
+        <div id="instructions" class="question">Кликнете на копчето Старт за да започне играта.</div>
+        <button id="start" class="button">Старт</button>
+        <button id="next" class="button" style="display:none;">Следно</button>
+
+        <audio id="music" loop>
+            <source src="music-file.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <audio id="scream-sound">
+            <source src="scream.mp3" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <div id="gif-container" class="gif-container"></div>
+    </div>
+
+    <script>
+        const startButton = document.getElementById('start');
+        const nextButton = document.getElementById('next');
+        const music = document.getElementById('music');
+        const screamSound = document.getElementById('scream-sound');
+        const instructions = document.getElementById('instructions');
+        const gifContainer = document.getElementById('gif-container');
+
+        const questions = [
+"Одлучуваш да мамиш на тест бидејќи повеќето твои соученици ќе го направат тоа.",
+"Да бидеш искрен со пријател за негово штетно однесување (се потсмева „на шега“).",
+"Се оддалечуваш од пријател обвинет за сексуално вознемирување.",
+"Да вратиш изгубени пари или да ги донираш во хуманитарна цел?",
+"Гледаш онлајн објава каде навредуваат соученик по име, но решаваш да ја игнорираш.",
+"Да се спротивставиш на дискриминаторски шеги секогаш кога ќе ги слушнеш, ризикувајќи да те наречат „пречувствителен“, или да ги бираш битките?",
+"Да се спротивставиш на пријатели што сакаат да вандализираат, или да молчиш за да избегнеш кавга?",
+"Секогаш да се спротивставуваш на дискриминаторски коментари.",
+"Му даваш домашна работа на пријател за да ја предаде како своја.",
+"Гласаш за пријател во училишни избори иако знаеш дека не е способен.",
+"Не реагираш кога пријател се смее на малтретирање, бидејќи „технички“ не учествува.",
+"Да го поддржиш пријателот на избори или да гласаш за подобар кандидат?",
+"Живееш во град каде графитите се дозволени.",
+"Пишуваш анонимно писмо до училиште за да пријавиш непочитување од наставник.",
+"Член од семејството кажува расистичка шега. Не реагираш бидејќи „само се шегува.“",
+"Да му укажеш на член од семејството за расистичка шега или да молчиш?",
+"Да побараш назад пари од пријател иако знаеш дека семејството му има финансиски проблеми?",
+"Да интервенираш кога ќе видиш сексуално вознемирување или да побараш помош од возрасен без да знаеш што ќе следи?",
+"Го убедуваш пријателот да пријави сексуално вознемирување.",
+"Решаваш да пријавиш сексистички инцидент кај директорот.",
+"Преземаш повеќе работа во групен проект бидејќи еден член не придонесува.",
+"Да се спротивставиш на пријатели кои се смеат на малтретирање или да молчиш бидејќи „не учествуваат“?",
+"Да бидеш искрен со родителите на пријател за штетно однесување или да не се мешаш?",
+"Наоѓаш пари без идентификација и ги донираш во цел што ја поддржуваш.",
+"Да дебатираш за родова еднаквост со некој со сексистички ставови или да избегнеш расправија?",
+"Се спротивставуваш на брат или сестра поради малтретирачко однесување.",
+"Да му кажеш на пријател дека расистичките шеги не се во ред или да зборуваш насамо подоцна?",
+"Пријател сака да прави графити. Не учествуваш, но не кажуваш ништо.",
+"Да проговориш кога гледаш расна микроагресија или да игнорираш за да нема тензија?",
+"Го криеш искуството со дискриминација.",
+"Да кажеш „не“ кога пријател бара да му шепкаш на тест или да му дозволиш да препише?",
+"Да пријавиш наставник што не ги почитува учениците или прво да зборуваш со родителите?",
+"Да се спротивставиш на ученик што постојано е непочитлив или да влијаеш преку свој пример?",
+"Да престанеш да слушаш музичар што кажал расистички коментари или да ја одвоиш уметноста од уметникот?"
+        ];
+
+        function playMusic() {
+            music.play();
+            displayRandomGif();
+            const title = document.querySelector('h1');
+            title.classList.add('animate');
+            setTimeout(() => {
+                music.pause();
+                screamSound.play();
+                gifContainer.innerHTML = "";
+                nextButton.style.display = 'inline-block';
+                instructions.textContent = questions[Math.floor(Math.random() * questions.length)];
+                title.classList.remove('animate');
+            }, Math.random() * 5000 + 5000);
+        }
+
+        function displayRandomGif() {
+            const randomGif = Math.floor(Math.random() * 10) + 1;
+            gifContainer.innerHTML = `<img src="${randomGif}.gif" alt="Random GIF">`;
+        }
+
+        startButton.addEventListener('click', () => {
+            startButton.style.display = 'none';
+            instructions.textContent = "Продавај го компирот додека свири музиката!";
+            playMusic();
+        });
+
+        nextButton.addEventListener('click', () => {
+            nextButton.style.display = 'none';
+            instructions.textContent = "Продавај го компирот додека свири музиката!";
+            playMusic();
+        });
+    </script>
+</body>
+</html>
